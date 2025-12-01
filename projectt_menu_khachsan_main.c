@@ -19,6 +19,23 @@ typedef struct{
 	double totalCost;
 }Booking;
 
+int isNumber(char str[]){
+    int i = 0;
+    if (str[0] == '\0' || str[0] == '\n')
+        return 0;
+
+    while (str[i] != '\0'){
+        if (str[i] == '\n'){ 
+            i++;
+            continue;
+        }
+        if (str[i] < '0' || str[i] > '9')
+            return 0;
+        i++;
+    }
+    return 1;
+}
+
 int themPhong(Room addRoom[], int roomCount){
 	char id[5];
 	int exist=-1;
@@ -28,7 +45,7 @@ int themPhong(Room addRoom[], int roomCount){
     fgets(id, sizeof(id), stdin);
     id[strcspn(id, " \n")] = 0;
 
-    if(strlen(id) == 0) {
+    if(strlen(id) == 0){
         printf("ID khong duoc de rong!\n");
         continue;
     }
@@ -52,59 +69,87 @@ int themPhong(Room addRoom[], int roomCount){
 			}
 			}while(addRoom[roomCount].type!=1 && addRoom[roomCount].type!=2);
 		
-		do {
-        printf("Nhap gia phong: ");
-        scanf("%lf", &addRoom[roomCount].price);
-        if (addRoom[roomCount].price < 0) {
-            printf("Gia phong khong hop le!\n");
-         }
-         } while (addRoom[roomCount].price < 0);
+	        char priceInput[20];
+			while(1){
+			    printf("Nhap gia phong: ");
+			    fflush(stdin);
+			    fgets(priceInput, sizeof(priceInput), stdin);
+			    if(!isNumber(priceInput)){
+			        printf("Loi: gia chi duoc nhap so!\n");
+			        continue;
+			    }
+			    addRoom[roomCount].price = atoi(priceInput);
 			
+			    if(addRoom[roomCount].price <= 0){
+			        printf("Gia phong phai lon hon 0!\n");
+			        continue;
+			    }
+			    break; 
+			}
 			addRoom[roomCount].status=0;
 			printf("Phong da duoc cap nhap!\n");
 			return roomCount+1;
-}
-}
-void capNhap(Room addRoom[], int roomCount){
-	char update[5];
-	int flag=-1;
-	
-	if (roomCount==0) {
-        printf("Khong co phong nao!\n");
-        return ;
-    }
-        
-	printf("Nhap ID phong muon cap nhap:");
-	scanf("%4s",update);
-	getchar();
+		}
+	}
 
-	for(int i=0; i<roomCount; i++){
-		if(strcmp(update, addRoom[i].room)==0){
-			flag =i;
-			break;
-		}
+void capNhap(Room addRoom[], int roomCount){
+	    char update[5];
+	    int flag = -1;
+	
+	    if (roomCount == 0){
+	        printf("Khong co phong nao!\n");
+	        return;
+	    }
+	    printf("Nhap ID phong muon cap nhap:");
+	    scanf("%4s", update);
+	    getchar();
+	    for (int i = 0; i < roomCount; i++){
+	        if (strcmp(update, addRoom[i].room)==0){
+	            flag = i;
+	            break;
+	        }
+	    }
+	    
+	    if(flag == -1){
+	        printf("Phong da ton tai hoac chua ton tai\n");
+	    }else{
+	        do{
+	            printf("Nhap loai phong moi(1:Phong don, 2:Phong doi):");
+	            scanf("%d", &addRoom[flag].type);
+	
+	            if(addRoom[flag].type != 1 && addRoom[flag].type != 2){
+	                printf("Phong khong hop le!\n");
+	            }
+	
+	        }while (addRoom[flag].type != 1 && addRoom[flag].type != 2);
+	        getchar();
+	        printf("Nhap gia phong moi: ");
+	
+	        while(1){
+	            char priceInput[20];
+	            fflush(stdin);
+	            fgets(priceInput, sizeof(priceInput), stdin);
+	
+	            if(!isNumber(priceInput)){
+	                printf("Loi: gia chi duoc nhap so!\n");
+	                printf("Nhap gia phong moi: ");
+	                continue;
+	            }
+	
+	            addRoom[flag].price = atoi(priceInput);
+	
+	            if(addRoom[flag].price <= 0){
+	                printf("Gia tien khong hop le! Phai lon hon 0\n");
+	                printf("Nhap gia phong moi:");
+	                continue;
+	            }
+	            break;
+	        }
+	
+	        printf("Phong da duoc cap nhap!\n");
+	    }
 	}
-	if(flag==-1){
-		printf("Phong da ton tai hoac chua ton tai\n");
-	}else{
-		do{
-			printf("Nhap loai phong moi(1:Phong don, 2:Phong doi):");
-			scanf("%d",&addRoom[flag].type);
-			if(addRoom[flag].type!=1 && addRoom[flag].type!=2){
-			printf("Phong khong hop le!\n");
-		}
-			}while(addRoom[flag].type!=1 && addRoom[flag].type!=2);
-			
-			do{
-			printf("Nhap gia phong moi:");
-			scanf("%lf",&addRoom[flag].price);
-			if(addRoom[flag].price <=0){
-				printf("Gia tien khong hop le!");
-			}
-		    }while(addRoom[flag].price <=0);
-			printf("Phong da duoc cap nhap!\n");
-	}
-}
+
 
 void baoTriPhong(Room addRoom[], int roomCount){
 		char baoTri[5];
@@ -139,7 +184,7 @@ void hienThi(Room addRoom[],int roomCount){
     int nowPage=1;
     char choose;
 
-    if (roomCount==0) {
+    if (roomCount==0){
         printf("Khong co phong nao!\n");
         return ;
     }
@@ -150,8 +195,7 @@ void hienThi(Room addRoom[],int roomCount){
         if(end>roomCount){
         	end = roomCount;
 		}
-        printf("\n=============DANH SACH PHONG(%d/%d)============= \n",
-               nowPage, totalPage);
+        printf("\n=============DANH SACH PHONG(%d/%d)============= \n",nowPage, totalPage);
         printf("|%-10s|%-10s|%-10s|%-12s|\n","ID Phong","The loai","Gia phong","Trang thai");
         printf("-------------------------------------------------\n");
         for (int i=start; i<end; i++){
@@ -170,9 +214,9 @@ void hienThi(Room addRoom[],int roomCount){
             }
         }
         printf("----------------------------------------------\n");
-        printf("F: FRONNT PAGE\n");
-        printf("N: NEXT PAGE\n");
-        printf("E: EXIT\n");
+        printf("F: TRANG TRUOC\n");
+        printf("N: TRANG KE TIEP\n");
+        printf("E: THOAT\n");
         printf("--------------------------------------------\n");
         printf("Nhap lua chon cua ban:");
         scanf(" %c",&choose);
@@ -426,6 +470,7 @@ int checkIn(Booking books[], Room addRoom[], int roomCount, int bookCount){
     printf("Tong tien: %.0lf\n", books[bookCount].totalCost);
 
     return bookCount+1;
+    getchar();
 }
 
 void historyRoom(Booking books[], int bookCount, Room rooms[], int roomCount){
@@ -522,6 +567,7 @@ int main(){
 			break;
 		}
 		case 8: {
+		
             historyRoom(books, bookCount, addRoom, roomCount);
             break;
         }
@@ -538,4 +584,3 @@ int main(){
 	}
 }
 }
-
