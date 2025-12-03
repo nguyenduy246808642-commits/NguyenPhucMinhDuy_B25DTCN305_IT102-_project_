@@ -556,6 +556,7 @@ int checkIn(Booking books[], int bookCount, int roomCount, Room addRoom[]){
 void lichSu(Booking books[], int bookCount, int roomCount, Room addRoom[]){
 	char historyRoom[10];
 	int flag=-1;
+	
 
 		printf("Nhap ID phong muon xem lich su:");
 		fgets(historyRoom, sizeof(historyRoom), stdin);
@@ -591,7 +592,7 @@ void lichSu(Booking books[], int bookCount, int roomCount, Room addRoom[]){
 			printf("| Phong chua chua tung co khach thue! |");
 			printf("\n---------------------------------------\n\n");
 		}
-	
+		
 }
 
 int main(){
@@ -619,9 +620,21 @@ int main(){
 		printf("9. (F09): Thoat he thong\n");
 		printf("================================================================\n");
 		
-		printf("Nhap lua chon cua ban:");
-		scanf("%d",&choose);
-		while(getchar()!='\n');
+		char input[20];
+		while(1){
+			printf("Nhap lua chon cua ban:");
+			fgets(input, sizeof(input), stdin);
+			input[strcspn(input, "\n")]=0;
+			
+			if(!isNumber(input)){
+				printf("\n------------------------------\n");
+		        printf("| Lua chon khong hop le !!! |\n");
+		        printf("------------------------------\n\n");
+		        continue;
+			}
+			choose=atoi(input);
+			break;
+		}
 		switch(choose){
 			case 1:{
 				roomCount = themPhong(addRoom, roomCount);
