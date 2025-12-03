@@ -38,18 +38,35 @@ int isNumber(char str[]){
 	return 1;
 } 
 
+int isOnlySpace(char str[]){
+	int onlySpace=1;    // Ban dau chi la khoang trang
+	
+	for(int i=0; str[i] != '\0'; i++){
+		if(str[i] !=' ' && str[i] != '\t'){
+			onlySpace=0;
+			break;
+		}
+	}
+	return onlySpace; 
+} 
+
 int themPhong(Room addRoom[], int roomCount){
 		char id[10];
+		char themPhong[10];
 		int flag=-1;
+		
 		while(1){
 		printf("Nhap ID phong ban muon them vao:");
 		fgets(id, sizeof(id), stdin);
-		id[strcspn(id, "\n")]=0;
+		id[strcspn(id, "\n")]=0;               //xoa '\n'
 		
-		if(strlen(id)==0){
-			printf("\nID phong khong duoc de rong! Hay nhap lai di\n");
+		if(isOnlySpace(id)){                 //check
+			printf("\n---------------------------\n");
+			printf("| Ban khong duoc de rong! |");
+			printf("\n---------------------------\n");
 			continue;
-		}
+		} 
+		
 		for(int i=0; i<roomCount; i++){                     
 			if(strcmp(addRoom[i].room, id)==0){
 				flag=i;
@@ -66,8 +83,17 @@ int themPhong(Room addRoom[], int roomCount){
 	
 	do{
 		printf("Nhap the loai phong (1: Phong don, 2 Phong doi):");
-		scanf("%d",&addRoom[roomCount].type);
-		getchar();
+		fgets(themPhong, sizeof(themPhong), stdin);
+		themPhong[strcspn(themPhong, "\n")]=0;
+		
+		if(isOnlySpace(themPhong)){                 
+			printf("\n---------------------------\n");
+			printf("| Ban khong duoc de rong! |");
+			printf("\n---------------------------\n");
+			continue;
+		}
+		addRoom[roomCount].type=atoi(themPhong);
+		 
 		if(addRoom[roomCount].type!=1 && addRoom[roomCount].type!=2){
 			printf("\n----------------------------------------------------\n");
 			printf("|Loai phong ban nhap vao khonng hop le! Nhap lai di|");
@@ -80,6 +106,14 @@ int themPhong(Room addRoom[], int roomCount){
 		printf("Nhap gia phong:");
 		fgets(inputPrice, sizeof(inputPrice), stdin);
 		inputPrice[strcspn(inputPrice, "\n")]=0;
+		
+		if(isOnlySpace(inputPrice)){                 
+			printf("\n---------------------------\n");
+			printf("| Ban khong duoc de rong! |");
+			printf("\n---------------------------\n");
+			continue;
+		}
+		
 		
 		if(!isNumber(inputPrice)){
 			printf("\n-------------------------------\n");
@@ -109,16 +143,19 @@ int themPhong(Room addRoom[], int roomCount){
 
 void capNhap(Room addRoom[], int roomCount){
 	char update[10];
+	char themPhong[10];
 	int flag=-1;
 	while(1){
 		printf("Nhap ID phong muon cap nhap:");
 		fgets(update, sizeof(update), stdin);
 		update[strcspn(update, "\n")]=0;
 			
-		if(strlen(update)==0){
-			printf("\nKhong duoc de rong! Hay nhap lai di\n");
+		if(isOnlySpace(update)){                 
+			printf("\n---------------------------\n");
+			printf("| Ban khong duoc de rong! |");
+			printf("\n---------------------------\n");
 			continue;
-		}
+		} 
 		for(int i=0; i<roomCount; i++){
 			if(strcmp(update, addRoom[i].room)==0){
 				flag=i;
@@ -133,8 +170,17 @@ void capNhap(Room addRoom[], int roomCount){
 		}
 		do{
 		printf("Nhap the loai phong moi(1: Phong don, 2:Phong doi):");
-		scanf("%d",&addRoom[flag].type);
-		getchar(); 
+		fgets(themPhong, sizeof(themPhong), stdin);
+		themPhong[strcspn(themPhong, "\n")]=0; 
+		
+		if(isOnlySpace(themPhong)){                 
+			printf("\n---------------------------\n");
+			printf("| Ban khong duoc de rong! |");
+			printf("\n---------------------------\n");
+			continue;
+		}
+		addRoom[flag].type=atoi(themPhong);
+		
 		if(addRoom[flag].type!=1 && addRoom[flag].type!=2){
 			printf("\n----------------------------\n");
 			printf("| Loai phong khong hop le! |");
@@ -147,6 +193,13 @@ void capNhap(Room addRoom[], int roomCount){
 	    printf("Nhap gia tien moi:");
 	    fgets(price, sizeof(price), stdin);
 	    price[strcspn(price, "\n")]=0;
+	    
+	    if(isOnlySpace(price)){                 
+			printf("\n---------------------------\n");
+			printf("| Ban khong duoc de rong! |");
+			printf("\n---------------------------\n");
+			continue;
+		}
 	    
 	    if(!isNumber(price)){
 			printf("\n-------------------------------\n");
@@ -179,10 +232,13 @@ void baoTri(Room addRoom[], int roomCount){
 		printf("Nhap ID phong muon bao tri:");
 		fgets(bt, sizeof(bt), stdin);
 		bt[strcspn(bt, "\n")]=0;
-		if(strlen(bt) == 0){
-			printf("\nKhong duoc de rong! Hay nhap lai di\n");
-	    }
-		}while(strlen(bt) == 0);
+		
+		if(isOnlySpace(bt)){                 
+			printf("\n---------------------------\n");
+			printf("| Ban khong duoc de rong! |");
+			printf("\n---------------------------\n");
+		} 
+		}while(isOnlySpace(bt));
 		
 		
 		for(int i=0; i<roomCount; i++){
@@ -304,15 +360,27 @@ void hienThi(Room addRoom[], int roomCount){
 }
 
 void timKiem(Room addRoom[], int roomCount){
-	int tp;
-	int flag=0;
-	do{
-		printf("Nhap loai phong ban muon tim kiem(1:Phong don, 2:Phong doi):");
-		scanf("%d",&tp);
-		if(tp!=1 && tp!=2){
-			printf("Phong ban muon tim khong hop le!!\n");
-		}
-	}while(tp!=1 && tp!=2);
+	char input[100];
+    int tp;
+    int flag=0; 
+
+    do {
+        printf("Nhap loai phong ban muon tim kiem(1:Phong don, 2:Phong doi): ");
+        fgets(input, sizeof(input), stdin);
+        if(isOnlySpace(input)){                 
+            printf("\n---------------------------\n");
+            printf("| Ban khong duoc de rong! |\n");
+            printf("---------------------------\n");
+            continue;
+        } 
+
+        tp = atoi(input);  //chuyen chuoi sang int 
+
+        if(tp != 1 && tp != 2){
+            printf("Phong ban muon tim khong hop le!!\n");
+        }
+
+    } while(tp != 1 && tp != 2);
 	
 	system("cls"); 
 	    printf("+----------------------------------------+\n");
@@ -456,14 +524,17 @@ int checkIn(Booking books[], int bookCount, int roomCount, Room addRoom[]){
 		int flag=-1;
 		int day; 
 	
+	while(1){
 	printf("Nhap ID phong ban muon dat:");
 	fgets(roomId, sizeof(roomId), stdin);
 	roomId[strcspn(roomId, "\n")]=0;
 	
-	if(strlen(roomId) == 0){
-		printf("\nKhong duoc de rong! Hay nhap lai di\n");
-		return bookCount;
-    }
+	if(isOnlySpace(roomId)){
+            printf("\n---------------------------\n");
+            printf("| Ban khong duoc de rong! |\n");
+            printf("---------------------------\n");
+            continue;
+        }
     
     for(int i=0; i<roomCount; i++){
     	if(strcmp(roomId, addRoom[i].room)==0){
@@ -475,20 +546,22 @@ int checkIn(Booking books[], int bookCount, int roomCount, Room addRoom[]){
 		printf("\n-------------------------\n");
 		printf("| Khong tim thay phong! |");
 		printf("\n-------------------------\n");
-		return bookCount;
+		continue; 
 	}
 	if(addRoom[flag].status==1){
 		printf("\n------------------------------------------------\n");
 		printf("| Phong da co khach! Ban hay chon phong khac |");
 		printf("\n------------------------------------------------\n");
-		return bookCount;
+		continue;
+		 
 	}else if(addRoom[flag].status==2){
 		printf("\n------------------------------------------------\n");
 		printf("| Phong dang bao tri! Ban hay chon phong khac |");
 		printf("\n------------------------------------------------\n");
-		return bookCount;
+		continue; 
 	}
-	
+	break; 
+}
 	do{
 		printf("Nhap ten khach hang:");
 		fgets(customerName, sizeof(customerName), stdin);
